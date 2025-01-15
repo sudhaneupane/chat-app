@@ -1,5 +1,10 @@
+import bcrypt from "bcrypt";
+
 export const signup = async (req, res) => {
+  const { fullName, email, password } = req.body;
   try {
+    // hash password
+    
   } catch (error) {}
 };
 
