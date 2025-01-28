@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { MessageSquare, User, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  MessageSquare,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import AuthImagePattern from "../components/AuthImagePattern";
+import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,12 +21,27 @@ const SignupPage = () => {
     password: "",
   });
 
-  const { signup, isSigningUp } = useAuthStore();
+  const { signUp, isSigningUp } = useAuthStore();
 
-  const validateForm = () => {};
+  const validateForm = () => {
+    if (!formData.fullName.trim()) return toast.error("Full name is required");
+    if (!formData.email.trim()) return toast.error("Email is required");
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      return toast.error("Invalid email format");
+    }
+    if (!formData.password) return toast.error("Password is required");
+    if (!formData.password.length > 6)
+      return toast.error("Password must be at least 6 character");
+    return true;
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const success = validateForm();
+    if (success === true) {
+      signUp(formData);
+    }
   };
 
   return (
@@ -30,14 +55,18 @@ const SignupPage = () => {
                 <MessageSquare className="h-6 w-6 text-blue-500" />
               </div>
               <h1 className="text-2xl font-bold mt-2">Create Account</h1>
-              <p className="text-gray-500">Get started with your free account</p>
+              <p className="text-gray-500">
+                Get started with your free account
+              </p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name */}
             <div className="form-control">
-              <label className="block text-sm font-medium mb-1">Full Name</label>
+              <label className="block text-sm font-medium mb-1">
+                Full Name
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
@@ -127,6 +156,12 @@ const SignupPage = () => {
           </div>
         </div>
       </div>
+
+      {/* right side */}
+      <AuthImagePattern
+        title="Join the community"
+        subtitle="Connect with friends, share moments, and stay in touch"
+      />
     </div>
   );
 };

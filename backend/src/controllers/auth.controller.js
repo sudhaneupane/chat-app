@@ -31,7 +31,7 @@ export const signup = async (req, res) => {
       password: hashedPassword,
     });
 
-    console.log(fullName, email, password);
+    // console.log(fullName, email, password);
 
     if (user) {
       // generate jwt token
